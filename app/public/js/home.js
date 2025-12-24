@@ -195,8 +195,8 @@ async function loadLeafletOnce() {
   });
 }
 
+// --- limpieza opcional al salir del mapa ---
 let territorioMap = null;
-
 function destroyTerritorioMap() {
   if (territorioMap) {
     territorioMap.remove();
@@ -204,88 +204,59 @@ function destroyTerritorioMap() {
   }
 }
 
+// ✅ init del mapa (usa Leaflet ya cargado)
 async function initTerritorioMap() {
   const mapDiv = document.getElementById("map");
-  if (!mapDiv) return; // si el backend no trajo el div, no hay nada que inicializar
+  if (!mapDiv) return;
 
   destroyTerritorioMap();
 
-  // crea el mapa
   territorioMap = L.map("map", { zoomControl: true }).setView([4.6, -74.1], 6);
 
-  // tiles
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19,
-    attribution: "&copy; OpenStreetMap contributors"
+    attribution: "&copy; OpenStreetMap contributors",
   }).addTo(territorioMap);
 
-  // geojson (DANE) - igual que tu ejemplo base
+  // Si por ahora solo quieres ver el mapa base, con esto basta:
+  // return;
+
+  // Si también quieres los departamentos (tu ejemplo), descomenta:
   const DANE_DEPTOS_GEOJSON =
     "https://geoportal.dane.gov.co/mparcgis/rest/services/INDICADORES_CTERRITORIO/Cache_MpiosCTDeptosAM_DivisionPolitica_2012/MapServer/2/query" +
     "?where=1%3D1&outFields=*&returnGeometry=true&f=geojson&outSR=4326&geometryPrecision=5";
 
   const resp = await fetch(DANE_DEPTOS_GEOJSON);
-  if (!resp.ok) throw new Error("No se pudo cargar el GeoJSON de departamentos");
   const geojson = await resp.json();
 
   const baseStyle = () => ({ weight: 1.2, opacity: 0.9, color: "#444", fillOpacity: 0.08 });
-  const highlightStyle = () => ({ weight: 4.5, opacity: 1, color: "#ff6a00", fillOpacity: 0.12, dashArray: "6 4" });
 
-  let activeLayer = null;
-  let deptosLayer = null;
-
-  function resetHighlight() {
-    if (activeLayer && deptosLayer) {
-      deptosLayer.resetStyle(activeLayer);
-      activeLayer = null;
-    }
-  }
-
-  function highlightLayer(layer, opts = { zoomTo: true, openPopup: true }) {
-    resetHighlight();
-    activeLayer = layer;
-    layer.setStyle(highlightStyle());
-    if (layer.bringToFront) layer.bringToFront();
-    if (opts.openPopup) layer.openPopup();
-    if (opts.zoomTo) territorioMap.fitBounds(layer.getBounds(), { padding: [20, 20] });
-  }
-
-  deptosLayer = L.geoJSON(geojson, {
+  const deptosLayer = L.geoJSON(geojson, {
     style: baseStyle,
     onEachFeature: (feature, layer) => {
       const depto = feature?.properties?.NOM_DPTO || "Departamento";
-      const codigo = feature?.properties?.COD_DPTO || "";
-      layer.bindPopup(`<b>${depto}</b><br/>Código: ${codigo}<br/><small>Click para subrayar</small>`);
-      layer.on("click", () => highlightLayer(layer, { zoomTo: false, openPopup: true }));
-    }
+      layer.bindPopup(`<b>${depto}</b><br/><small>Click para seleccionar</small>`);
+      layer.on("click", () => layer.openPopup());
+    },
   }).addTo(territorioMap);
 
   territorioMap.fitBounds(deptosLayer.getBounds(), { padding: [10, 10] });
-
-  // Botones opcionales si existen en el HTML que devuelve el backend:
-  document.getElementById("btnReset")?.addEventListener("click", () => {
-    resetHighlight();
-    territorioMap.fitBounds(deptosLayer.getBounds(), { padding: [10, 10] });
-  });
 }
 
-/* =========================================
-   ✅ renderRoute (listo para copiar/pegar)
-   - Si hay tpl => render local
-   - Si hay server => fetch backend, inyecta HTML y luego init mapa
-   ========================================= */
-async function renderRoute(route) {
+// ✅ ESTE es el renderRoute que te faltaba (tpl vs server)
+const renderRoute = async (route) => {
   const cfg = ROUTES[route] || ROUTES.dashboard;
 
   pageTitle.textContent = cfg.title;
   activeRouteEl.textContent = route;
+
   setActiveNav(route);
   localStorage.setItem("ui.route", route);
 
-  // si salgo de territorio, limpio el mapa (evita bugs al volver)
+  // si salgo de territorio, limpio mapa
   if (route !== "territorio") destroyTerritorioMap();
 
-  // 1) RUTA LOCAL (templates <template>)
+  // 1) Si es template local
   if (cfg.tpl) {
     const tpl = document.querySelector(cfg.tpl);
     view.innerHTML = "";
@@ -294,18 +265,25 @@ async function renderRoute(route) {
     return;
   }
 
-  // 2) RUTA SERVER (backend retorna HTML)
+  // 2) Si viene del backend
   if (cfg.server) {
     view.innerHTML = `<p class="muted">Cargando...</p>`;
 
-    const resp = await fetch(cfg.server, { headers: { "Accept": "text/html" } });
+    const resp = await fetch(cfg.server, { headers: { Accept: "text/html" } });
     const html = await resp.text();
 
     view.innerHTML = html;
 
-    // 👇 IMPORTANTE: el mapa se inicializa DESPUÉS de insertar el HTML
+    // después de insertar el HTML, inicializa el mapa
     if (route === "territorio") {
-      await loadLeafletOnce();
+      // Leaflet debe estar disponible (ver sección CSP abajo)
+      if (!window.L) {
+        console.error("Leaflet (window.L) no está cargado. Revisa CSP o carga local.");
+        view.insertAdjacentHTML("afterbegin",
+          `<p class="muted">No se pudo cargar Leaflet (bloqueado por CSP).</p>`
+        );
+        return;
+      }
       await initTerritorioMap();
     }
 
@@ -313,10 +291,9 @@ async function renderRoute(route) {
     return;
   }
 
-  // fallback por si alguien configura mal la ruta
+  // fallback
   view.innerHTML = `<p class="muted">Ruta no configurada.</p>`;
-}
-
+};
 
   nav.addEventListener("click", (e) => {
     const btn = e.target.closest(".nav__item");
