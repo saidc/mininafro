@@ -7,6 +7,7 @@ const morgan = require("morgan");
 const env = require("./config/env");
 const authRoutes = require("./routes/auth.routes");
 const appRoutes = require("./routes/app.routes");
+import territorioRoutes from "./routes/territorio.routes.js";
 
 const app = express();
 
@@ -29,7 +30,9 @@ app.use(cookieParser(env.COOKIE_SECRET));
 
 app.use("/public", express.static(path.join(process.cwd(), "public")));
 
+
 app.use(authRoutes);
 app.use(appRoutes);
+app.use(territorioRoutes);
 
 module.exports = app;

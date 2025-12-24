@@ -354,3 +354,23 @@ body.sidebar-collapsed .nav__item{ justify-content:center; }
 }
 .card__t{ margin:0 0 6px; font-size:16px; }
 .card__p{ margin:0; color: var(--muted); }
+
+
+
+/* Mapa dentro del contenedor del Home */
+.map-container{
+  width: 100%;
+  height: 70vh;        /* ajusta si quieres */
+  min-height: 420px;   /* evita mapa "aplastado" */
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.toolbar{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  padding: 10px 0 12px;
+}
+.toolbar .hint{ opacity:.75; font-size:13px; margin-left:6px; }
+.toolbar .visible{ margin-left:auto; font-size:13px; opacity:.85; }
