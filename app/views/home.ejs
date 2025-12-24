@@ -4,22 +4,236 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Home</title>
-  <link rel="stylesheet" href="/public/css/base.css">
-  <script defer src="/public/js/page-loader.js"></script>
+  <link rel="stylesheet" href="/public/css/home.css">
+  <script defer src="/public/js/home.js"></script>
 </head>
 <body>
-  <div id="pageLoader" class="loader-overlay">
-    <div class="spinner"></div>
-  </div>
+  <div class="app" id="app">
+    <!-- HEADER -->
+    <header class="header" role="banner">
+      <div class="header__left">
+        <button class="icon-btn" id="btnBurger" type="button" aria-label="Abrir/cerrar menú">
+          ☰
+        </button>
 
-  <main class="container">
-    <h1>Home</h1>
-    <p>Usuario: <b><%= user.username %></b></p>
+        <div class="logos" aria-label="Logo institucional">
+          <img class="logo logo--light"
+            src="https://images2.imgbox.com/ba/e1/fWBCQcsx_o.png"
+            alt="Logo institucional (modo diurno)" />
+          <img class="logo logo--dark"
+            src="https://images2.imgbox.com/9e/e2/SaJJfgaU_o.png"
+            alt="Logo institucional (modo nocturno)" />
+        </div>
+      </div>
 
-    <div class="card">
-      <a href="/evidencia">Ir a módulo de evidencia</a><br/>
-      <a href="/logout">Cerrar sesión</a>
+      <!-- ✅ Título centrado REAL (centrado en todo el header) -->
+      <h1 class="header__title" id="appName"></h1>
+
+      <!-- USER MENU -->
+      <div class="header__right user" id="userMenu">
+        <span class="user__name" id="userName">Usuario</span>
+
+        <button class="avatar" id="userAvatarBtn" type="button"
+          aria-label="Abrir menú de usuario" aria-haspopup="menu" aria-expanded="false">
+          <span class="avatar__txt" id="userInitials">U</span>
+        </button>
+
+        <div class="dropdown" id="userDropdown" role="menu" aria-label="Menú de usuario" hidden>
+          <button class="dropdown__item" role="menuitem" type="button" data-action="profile">Mi perfil</button>
+          <button class="dropdown__item" role="menuitem" type="button" data-action="settings">Configuración</button>
+          <button class="dropdown__item" role="menuitem" type="button" data-action="help">Ayuda</button>
+          <div class="dropdown__sep" role="separator" aria-hidden="true"></div>
+          <button class="dropdown__item dropdown__item--danger" role="menuitem" type="button" data-action="logout">
+            Cerrar sesión
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- BODY -->
+    <div class="body">
+      <div class="overlay" id="sidebarOverlay" hidden aria-hidden="true"></div>
+
+      <!-- SIDEBAR -->
+      <aside class="sidebar" id="sidebar" role="navigation" aria-label="Menú lateral">
+        <div class="sidebar__top">
+          <span class="sidebar__title">Menú</span>
+        </div>
+
+        <nav class="nav" id="sidebarNav">
+          <button class="nav__item is-active" type="button" data-route="dashboard" aria-current="page">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 10.5L12 3l9 7.5" />
+              <path d="M5 10v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V10" />
+              <path d="M9 21v-7a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v7" />
+            </svg>
+            <span class="nav__txt">Inicio</span>
+          </button>
+
+          <button class="nav__item" type="button" data-route="mesas">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+            </svg>
+            <span class="nav__txt">Módulo</span>
+          </button>
+
+          <button class="nav__item" type="button" data-route="reportes">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="3 17 9 11 13 15 21 7" />
+              <polyline points="14 7 21 7 21 14" />
+            </svg>
+            <span class="nav__txt">Reportes</span>
+          </button>
+
+          <button class="nav__item" type="button" data-route="admin">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="3" />
+              <path
+                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06A1.65 1.65 0 0 0 15 19.4a1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06A2 2 0 0 1 4.29 17l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06A2 2 0 1 1 7.04 4.3l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09A1.65 1.65 0 0 0 15 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06A2 2 0 1 1 19.7 7.04l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+            </svg>
+            <span class="nav__txt">Administración</span>
+          </button>
+          
+          <button class="nav__item" data-route="Territorio" type="button">
+            <svg class="icon"
+                xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" 
+                stroke-width="1" stroke-linecap="round" 
+                stroke-linejoin="round" aria-hidden="true"
+                focusable="false"> 
+              <g transform="translate(0,24) scale(0.0046875,-0.0046875)">
+                <path vector-effect="non-scaling-stroke"
+                      d="M2485 4999 c-60 -33 -104 -72 -184 -164 -109 -125 -128 -135 -241
+                        -128 -83 5 -87 4 -154 -31 -72 -38 -108 -44 -151 -24 -43 19 -125 -13 -174
+                        -68 -43 -49 -51 -76 -71 -234 -13 -108 -29 -132 -184 -269 -84 -74 -124 -117
+                        -137 -147 -15 -34 -25 -43 -52 -48 -38 -7 -64 -32 -93 -90 -19 -38 -31 -51
+                        -106 -120 -29 -26 -38 -42 -38 -66 0 -41 12 -63 77 -137 73 -84 80 -106 52
+                        -179 -51 -140 -54 -158 -41 -274 13 -115 36 -193 76 -262 25 -44 25 -44 6 -73
+                        -29 -46 -75 -94 -197 -205 -62 -56 -115 -111 -117 -123 -3 -12 -8 -43 -11 -69
+                        -5 -36 -17 -60 -51 -101 -24 -30 -44 -59 -44 -65 0 -16 112 -114 206 -178 47
+                        -33 108 -78 136 -101 28 -24 72 -50 96 -60 42 -16 50 -16 127 0 117 24 136 22
+                        188 -17 84 -64 119 -71 187 -36 81 41 114 18 170 -117 51 -125 89 -174 193
+                        -244 131 -88 173 -131 187 -190 15 -62 57 -109 98 -109 16 0 58 11 93 24 62
+                        23 69 24 199 14 108 -7 154 -16 230 -41 122 -41 125 -51 40 -142 -54 -59 -90
+                        -115 -90 -144 0 -5 7 -17 16 -25 12 -13 29 -15 77 -10 40 3 88 0 134 -10 40
+                        -9 79 -13 86 -10 27 10 40 59 48 174 7 118 10 129 89 325 25 61 33 96 33 145
+                        1 81 -19 128 -107 250 -78 109 -97 157 -73 193 9 14 54 43 102 66 88 42 110
+                        66 98 109 -3 13 -37 39 -89 68 -47 26 -83 52 -81 58 7 22 96 36 171 26 144
+                        -19 204 -14 285 25 40 19 81 35 90 35 13 0 26 -21 47 -71 51 -127 120 -164
+                        185 -100 25 25 29 37 29 83 0 58 -32 203 -54 246 -24 47 -64 78 -126 101 -33
+                        12 -62 26 -65 31 -3 5 10 30 30 55 61 80 59 112 -10 176 -56 53 -70 93 -60
+                        178 4 36 7 105 6 153 -2 75 1 93 23 137 27 53 33 109 16 142 -6 10 -30 29 -53
+                        41 -39 21 -60 23 -259 28 -245 6 -229 1 -284 93 -35 59 -84 97 -126 97 -16 0
+                        -56 -9 -90 -21 -143 -48 -323 -10 -392 84 -19 26 -21 40 -18 133 l3 104 -47
+                        90 c-60 117 -89 145 -159 160 -30 6 -55 15 -55 18 0 11 29 51 87 120 62 74 75
+                        97 105 188 24 73 36 88 182 219 160 143 176 160 176 187 0 39 -40 90 -90 116
+                        -49 24 -75 27 -105 11z m97 -89 l33 -30 -75 -71 c-41 -39 -110 -100 -153 -136
+                        -85 -71 -92 -83 -136 -202 -23 -62 -43 -96 -86 -144 -66 -73 -110 -156 -101
+                        -190 6 -26 49 -51 113 -67 38 -9 45 -17 90 -93 l48 -82 0 -116 c0 -109 2 -118
+                        27 -157 80 -121 299 -178 464 -122 32 12 70 19 84 18 23 -3 58 -42 105 -120
+                        37 -61 67 -68 280 -68 105 0 207 -5 227 -10 57 -16 61 -35 25 -115 -24 -54
+                        -31 -81 -29 -120 5 -85 5 -108 -3 -181 -11 -102 11 -171 70 -221 25 -20 45
+                        -42 45 -48 0 -6 -18 -34 -40 -64 -22 -29 -40 -61 -40 -71 0 -33 44 -73 115
+                        -105 57 -26 75 -40 87 -67 24 -49 37 -104 44 -185 6 -69 6 -73 -13 -73 -26 0
+                        -33 10 -67 93 -30 72 -64 107 -103 107 -14 0 -61 -16 -106 -36 -73 -33 -89
+                        -37 -152 -34 -38 2 -118 4 -177 4 -103 1 -108 0 -150 -29 -78 -55 -57 -106 72
+                        -174 34 -18 58 -36 53 -40 -4 -4 -38 -20 -75 -35 -74 -31 -90 -45 -113 -99
+                        -25 -60 -11 -108 62 -212 35 -49 77 -118 94 -153 40 -80 37 -107 -31 -275 -55
+                        -136 -70 -203 -70 -313 0 -39 -2 -73 -5 -76 -3 -3 -34 1 -68 9 -36 9 -79 12
+                        -102 8 l-40 -6 41 43 c89 95 104 117 104 157 0 32 -6 45 -35 69 -96 85 -452
+                        133 -589 81 -30 -12 -62 -19 -70 -16 -8 3 -23 32 -32 63 -21 72 -64 120 -177
+                        196 -122 82 -157 121 -195 217 -72 183 -145 236 -252 181 -53 -27 -79 -25
+                        -120 9 -80 65 -115 72 -241 45 -42 -9 -87 -14 -101 -11 -13 4 -51 28 -85 54
+                        -33 26 -115 88 -182 137 l-121 88 25 30 c38 45 54 81 61 135 5 46 10 53 158
+                        198 94 92 160 165 171 189 l17 39 -40 86 c-50 105 -59 140 -67 256 -6 82 -5
+                        96 20 160 37 98 46 146 35 184 -5 17 -38 67 -74 111 -36 44 -66 86 -66 93 0 8
+                        20 30 44 48 42 32 57 51 107 138 18 30 23 33 55 26 43 -8 64 7 64 44 0 38 30
+                        82 96 137 201 169 228 210 249 378 7 63 21 128 29 144 21 40 62 65 105 62 136
+                        -8 155 -5 201 25 43 28 51 30 150 31 139 0 153 9 298 170 80 90 134 134 164
+                        134 10 0 32 -14 50 -30z"/>
+              </g>
+            </svg>
+            <span class="nav__txt">Territorio</span>         
+          </button>
+        </nav>
+
+        <div class="sidebar__bottom">
+          <div class="theme">
+            <div class="theme__txt">
+              <span class="theme__t">Tema</span>
+              <span class="theme__l" id="themeLabel">Diurno</span>
+            </div>
+
+            <label class="switch" aria-label="Cambiar modo diurno/nocturno">
+              <input type="checkbox" id="themeSwitch" />
+              <span class="switch__ui" aria-hidden="true"></span>
+            </label>
+          </div>
+
+          <small class="meta">Versión <span id="appVersion">1.0</span></small>
+        </div>
+      </aside>
+
+      <!-- =============================
+          ✅ CONTENT MODULE (REEMPLAZABLE)
+          👉 Puedes cortar TODO este <main>
+          ============================= -->
+      <main class="content" id="appContent" role="main">
+        <div class="content__inner">
+          <div class="page-head">
+            <h2 class="page-title" id="pageTitle">Inicio</h2>
+            <div class="pill">Ruta: <span id="activeRoute">dashboard</span></div>
+          </div>
+
+          <div id="view"></div>
+
+          <!-- Plantillas (ejemplo). Reemplázalas por tus vistas reales -->
+          <template id="tpl-dashboard">
+            <p class="muted">Aquí va el contenido del módulo seleccionado.</p>
+            <section class="card">
+              <h3 class="card__t">Panel</h3>
+              <p class="card__p">Ejemplo de card. Sustituye este HTML por tu vista real.</p>
+            </section>
+          </template>
+
+          <template id="tpl-mesas">
+            <section class="card">
+              <h3 class="card__t">Módulo</h3>
+              <p class="card__p">Contenido del módulo “mesas”.</p>
+            </section>
+          </template>
+
+          <template id="tpl-reportes">
+            <section class="card">
+              <h3 class="card__t">Reportes</h3>
+              <p class="card__p">Aquí irían filtros, tablas, exportaciones, etc.</p>
+            </section>
+          </template>
+
+          <template id="tpl-admin">
+            <section class="card">
+              <h3 class="card__t">Administración</h3>
+              <p class="card__p">Gestión de usuarios, roles, catálogos…</p>
+            </section>
+          </template>
+        </div>
+      </main>
     </div>
-  </main>
+
+    <!-- FOOTER -->
+    <footer class="footer" role="contentinfo">
+      <div>© <span id="footerYear"></span> Entidad / Gobierno — Todos los derechos reservados.</div>
+      <div class="footer__r">
+        <a class="link" href="#" data-footer="policy">Política</a>
+        <span class="dot" aria-hidden="true">•</span>
+        <a class="link" href="#" data-footer="terms">Términos</a>
+      </div>
+    </footer>
+  </div>
 </body>
 </html>
