@@ -1,6 +1,9 @@
 const env = require("../config/env");
 const { createSession, revokeToken } = require("../services/tokenStore");
 
+
+
+
 function getLogin(req, res) {
   res.render("login", { error: null });
 }
@@ -14,10 +17,11 @@ function postLogin(req, res) {
 
   const { token, expiresAt } = createSession(username);
 
+  const isHttps = req.secure || req.headers["x-forwarded-proto"] === "https";
   res.cookie(env.COOKIE_NAME, token, {
     httpOnly: true,
     sameSite: "lax",
-    secure: env.NODE_ENV === "production",
+    secure: isHttps,
     expires: new Date(expiresAt),
   });
 
