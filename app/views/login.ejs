@@ -3,31 +3,58 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Login</title>
-  <link rel="stylesheet" href="/public/css/base.css">
-  <script defer src="/public/js/page-loader.js"></script>
+  <title>Iniciar sesión</title>
+  <link rel="stylesheet" href="/public/css/login.css">
+  
 </head>
 <body>
-  <div id="pageLoader" class="loader-overlay">
-    <div class="spinner"></div>
-  </div>
+  <main class="login">
+    <section class="login__card" aria-label="Inicio de sesión">
+      <header class="login__header">
+        <img class="login__logo" src="https://images2.imgbox.com/d3/25/vSpzn3D8_o.png" alt="Gobierno - Logo" />
+        <h1 class="login__title">Ingreso al Sistema</h1>
+        <p class="login__subtitle">Accede con tus credenciales institucionales</p>
+      </header>
 
-  <main class="container">
-    <h1>Login</h1>
+      <form method="POST" action="/login" class="login__form" id="loginForm" novalidate>
+        <div class="field">
+          <label class="field__label" for="username">Usuario</label>
+          <input class="field__input" id="username" name="username" autocomplete="username" required
+                 placeholder="usuario@entidad.gov.co" />
+          <small class="field__hint" id="usernameHint">Ej: usuario@entidad.gov.co</small>
+        </div>
 
-    <% if (error) { %>
-      <p class="error"><%= error %></p>
-    <% } %>
+        <div class="field">
+          <label class="field__label" for="password">Contraseña</label>
 
-    <form method="POST" action="/login" class="card">
-      <label>Usuario</label>
-      <input name="username" required />
+          <div class="password">
+            <input class="field__input password__input" id="password" name="password"
+                   type="password" autocomplete="current-password" required placeholder="••••••••" />
+            <button class="password__toggle" type="button" id="togglePassword"
+                    aria-label="Mostrar u ocultar contraseña" aria-pressed="false">
+              👁️
+            </button>
+          </div>
 
-      <label>Contraseña</label>
-      <input name="password" type="password" required />
+          <small class="field__hint">No compartas tu contraseña.</small>
+        </div>
 
-      <button type="submit">Entrar</button>
-    </form>
+        <div class="login__actions">
+          <button class="btn btn--primary" type="submit" id="btnLogin">
+            Ingresar
+          </button>
+          
+        </div>
+
+        <div class="alert" id="loginAlert" role="alert" aria-live="polite" hidden></div>
+      </form>
+
+      <footer class="login__footer">
+        <span>© <span id="year"></span> - Entidad / Gobierno</span>
+      </footer>
+    </section>
   </main>
+
+  <script defer src="/public/js/login.js"></script>
 </body>
 </html>
