@@ -7,7 +7,7 @@ const morgan = require("morgan");
 const env = require("./config/env");
 const authRoutes = require("./routes/auth.routes");
 const appRoutes = require("./routes/app.routes");
-import territorioRoutes from "./routes/territorio.routes.js";
+const territorioRoutes = require("./routes/territorio.routes.js");
 
 const app = express();
 
