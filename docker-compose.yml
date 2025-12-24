@@ -30,7 +30,11 @@ services:
       - edge_net
       - shared_net
     restart: unless-stopped
-
+  services:
+    db:
+      image: postgres:16
+      networks:
+        - shared_net
 networks:
   edge_net:
     name: webapp_edge_net
