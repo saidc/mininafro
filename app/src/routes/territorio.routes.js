@@ -1,10 +1,13 @@
 // app/src/routes/territorio.routes.js
-import { Router } from "express";
-const router = Router();
+const express = require("express");
+const { authRequired } = require("../middleware/auth");
+const { getEvidencePage, uploadEvidence } = require("../controllers/evidence.controller");
 
-router.get("/territorio", (req, res) => {
-  // Renderiza SOLO el contenido que irá dentro de #view
-  res.render("partials/territorio"); 
+const router = express.Router();
+
+router.get("/territorio", authRequired, (req, res) => {
+  res.render("partials/territorio", { user: req.user });
 });
 
-export default router;
+
+module.exports = router;
