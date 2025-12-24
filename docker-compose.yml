@@ -18,7 +18,7 @@ services:
       dockerfile: Dockerfile
     container_name: webapp_app
     env_file:
-      - ./.env
+      - ../shared/.env
     environment:
       - PORT=3000
     user: "${UID}:${GID}"
