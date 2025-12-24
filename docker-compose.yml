@@ -1,0 +1,41 @@
+services:
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: webapp_nginx
+    depends_on:
+      - app
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+    networks:
+      - edge_net
+    restart: unless-stopped
+
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: webapp_app
+    env_file:
+      - ./.env
+    environment:
+      - PORT=3000
+    user: "${UID}:${GID}"
+    volumes:
+      - ./storage:/app/storage
+    expose:
+      - "3000"
+    networks:
+      - edge_net
+      - shared_net
+    restart: unless-stopped
+
+networks:
+  edge_net:
+    name: webapp_edge_net
+    driver: bridge
+
+  shared_net:
+    external: true
+    name: shared_net

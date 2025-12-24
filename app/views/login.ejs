@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Login</title>
+  <link rel="stylesheet" href="/public/css/base.css">
+  <script defer src="/public/js/page-loader.js"></script>
+</head>
+<body>
+  <div id="pageLoader" class="loader-overlay">
+    <div class="spinner"></div>
+  </div>
+
+  <main class="container">
+    <h1>Login</h1>
+
+    <% if (error) { %>
+      <p class="error"><%= error %></p>
+    <% } %>
+
+    <form method="POST" action="/login" class="card">
+      <label>Usuario</label>
+      <input name="username" required />
+
+      <label>Contraseña</label>
+      <input name="password" type="password" required />
+
+      <button type="submit">Entrar</button>
+    </form>
+  </main>
+</body>
+</html>

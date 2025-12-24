@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Evidencia</title>
+  <link rel="stylesheet" href="/public/css/base.css">
+  <script defer src="/public/js/page-loader.js"></script>
+  <script defer src="/public/js/upload.js"></script>
+</head>
+<body>
+  <div id="pageLoader" class="loader-overlay">
+    <div class="spinner"></div>
+  </div>
+
+  <main class="container">
+    <h1>Módulo de envío de evidencia</h1>
+    <p>Usuario: <b><%= user.username %></b></p>
+
+    <div class="card">
+      <form id="uploadForm">
+        <input type="file" name="evidence" id="evidenceFile" required />
+        <button type="submit">Subir evidencia</button>
+      </form>
+
+      <div class="progress-wrap">
+        <div id="progressBar" class="progress-bar"></div>
+      </div>
+
+      <pre id="resultBox" class="result"></pre>
+
+      <a href="/home">Volver</a> | <a href="/logout">Cerrar sesión</a>
+    </div>
+  </main>
+</body>
+</html>
