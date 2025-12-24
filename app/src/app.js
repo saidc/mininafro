@@ -15,7 +15,13 @@ app.set("trust proxy", 1);
 app.set("view engine", "ejs");
 app.set("views", path.join(process.cwd(), "views"));
 
-app.use(helmet());
+//app.use(helmet());
+app.use(
+  helmet({
+    crossOriginOpenerPolicy: false,
+    originAgentCluster: false,
+  })
+);
 app.use(morgan("combined"));
 
 app.use(express.urlencoded({ extended: true }));
